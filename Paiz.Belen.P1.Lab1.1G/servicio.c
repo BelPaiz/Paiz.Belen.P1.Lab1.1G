@@ -49,15 +49,15 @@ int buscarServicio(eServicio serv[], int tam, int id, int* pIndex)
     if(serv && pIndex && tam > 0 )
     {
         *pIndex = -1;
-        for(int i = 0; i < tam; i++)
+        for(int i=0; i < tam; i++)
         {
             if(serv[i].id == id)
             {
                 *pIndex = i;
                 break;
             }
-            todoOk = 1;
         }
+        todoOk = 1;
     }
     return todoOk;
 }

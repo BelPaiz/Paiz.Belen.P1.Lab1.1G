@@ -1,21 +1,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "moto.h"
+#include "color.h"
+#include "tipo.h"
+#include "servicio.h"
+#include "trabajo.h"
 
 #define TAM 15
 #define TAMT 4
 #define TAMC 5
 #define TAMS 4
+#define TAMTR 40
 
 int main()
 {
     char salir ='n';
     int proxIdMoto = 500;
+    int proxIdTrabajo = 7000;
+    int flagMoto = 1;
+    int flagTrab = 1;
     eMoto motos[TAM];
+    eTrabajo trabajos[TAMTR];
     eTipo tipos[TAMT] =
     {
-        {1000, "Enduro"},
-        {1001, "Chopera"},
+        {1000, "Chopera"},
+        {1001, "Enduro"},
         {1002, "Scooter"},
         {1003, "Vintage"}
     };
@@ -36,23 +45,31 @@ int main()
     };
 
     inicializarMotos(motos, TAM);
-    harcodearMotos(motos, TAM, 10, &proxIdMoto);
+    inicializarTrabajo(trabajos, TAMTR);
 
     do
     {
         switch(menuMoto())
         {
         case 1:
-            altaMoto(motos, TAM, tipos, TAMT, colores, TAMC, &proxIdMoto);
+            if(altaMoto(motos, TAM, tipos, TAMT, colores, TAMC, &proxIdMoto, &flagMoto))
+            {
+                printf("Datos cargados con exito!!\n");
+            }
+            else
+            {
+                printf("No se pudo cargar los datos\n");
+            }
             break;
         case 2:
-            modificarMoto(motos, TAM, tipos, TAMT, colores, TAMC);
+            modificarMoto(motos, TAM, tipos, TAMT, colores, TAMC, flagMoto);
             break;
         case 3:
-            bajaMoto(motos, TAM, tipos, TAMT, colores, TAMC);
+            bajaMoto(motos, TAM, tipos, TAMT, colores, TAMC, flagMoto);
             break;
         case 4:
-            listarMotos(motos, TAM, tipos, TAMT, colores, TAMC);
+            ordenarMotosTipoId(motos, TAM);
+            listarMotos(motos, TAM, tipos, TAMT, colores, TAMC, flagMoto);
             break;
         case 5:
             listarTipos(tipos, TAMT);
@@ -64,12 +81,32 @@ int main()
             listarServicios(servicios, TAMS);
             break;
         case 8:
-            printf("Alta trabajo\n");
+            if(altaTrabajo(trabajos, TAMTR, motos, TAM, servicios, TAMS, tipos, TAMT, colores, TAMC, &proxIdTrabajo, &flagTrab, flagMoto))
+            {
+                printf("Trabajo cargado con exito!!\n");
+            }
+            else
+            {
+                printf("No se pudo cargar trabajo\n");
+            }
             break;
         case 9:
-            printf("Listar trabajos\n");
+            listarTrabajos(trabajos, TAMTR, servicios, TAMS, flagTrab);
+
             break;
         case 10:
+            Informes(motos, TAM, tipos, TAMT, colores, TAMC, flagMoto);
+            break;
+        case 11:
+            InformesTrabajos(motos, TAM, tipos, TAMT, colores, TAMC, trabajos, TAMTR, servicios, TAMS, flagMoto, flagTrab);
+            break;
+        case 12:
+            harcodearMotos(motos, TAM, &proxIdMoto, &flagMoto);
+            break;
+        case 13:
+            harcodearTrabajos(trabajos, TAMTR, &proxIdTrabajo, &flagTrab, flagMoto);
+            break;
+        case 14:
             confirmarSalida(&salir);
             break;
         case 100:

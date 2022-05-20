@@ -48,15 +48,15 @@ int buscarColor(eColor col[], int tam, int id, int* pIndex)
     if(col && pIndex && tam > 0 )
     {
         *pIndex = -1;
-        for(int i = 0; i < tam; i++)
+        for(int i=0; i < tam; i++)
         {
             if(col[i].id == id)
             {
                 *pIndex = i;
                 break;
             }
-            todoOk = 1;
         }
+        todoOk = 1;
     }
     return todoOk;
 }
@@ -66,7 +66,7 @@ int validarColor(eColor col[], int tam, int id)
     int esValido = 0;
     int indice;
 
-    if(buscarTipo(col, tam, id, &indice) == 1)
+    if(buscarColor(col, tam, id, &indice) == 1)
     {
         if(indice != -1)
         {

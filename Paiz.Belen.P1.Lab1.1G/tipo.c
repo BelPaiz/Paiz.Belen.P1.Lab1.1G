@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tipo.h"
-#include "color.h"
 
 int cargarDescripcionTipo(eTipo tip[], int tam, int id, char desc[])
 {
@@ -49,15 +48,15 @@ int buscarTipo(eTipo tip[], int tam, int id, int* pIndex)
     if(tip && pIndex && tam > 0 )
     {
         *pIndex = -1;
-        for(int i = 0; i < tam; i++)
+        for(int i=0; i < tam; i++)
         {
             if(tip[i].id == id)
             {
                 *pIndex = i;
                 break;
             }
-            todoOk = 1;
         }
+        todoOk = 1;
     }
     return todoOk;
 }

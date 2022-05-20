@@ -3,7 +3,8 @@
 #include <string.h>
 #include <ctype.h>
 #include "moto.h"
-#include "validacionesDatos.h"
+
+
 
 
 int inicializarMotos(eMoto vec[], int tam)
@@ -49,7 +50,11 @@ int menuMoto()
     printf("7. Listar servicios\n");
     printf("8. Alta trabajo\n");
     printf("9. Listar trabajo\n");
-    printf("10. salir\n");
+    printf("10. Informes\n");
+    printf("11. Informes de trabajos\n");
+    printf("12. Alta forzada/ Harcodear Motos\n");
+    printf("13. Alta forzada/ Harcodear Trabajos\n");
+    printf("14. salir\n");
     printf("Ingrese Opcion: ");
     fflush(stdin);
 
@@ -78,13 +83,31 @@ int buscarLibre(eMoto vec[], int tam, int* pIndex)
                 *pIndex = i;
                 break;
             }
-            todoOk = 1;
         }
+        todoOk = 1;
     }
     return todoOk;
 }
 
-int altaMoto(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC, int* pNextId)
+int cargarMarcaMoto(eMoto vec[], int tam, int id, char desc[])
+{
+    int todoOk = 0;
+
+    if(vec != NULL && desc != NULL && tam > 0)
+    {
+      for(int i = 0; i < tam; i++)
+      {
+          if(vec[i].id == id)
+          {
+              strcpy(desc, vec[i].marca);
+              todoOk = 1;
+              break;
+          }
+      }
+    }
+    return todoOk;
+}
+int altaMoto(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC, int* pNextId, int* pFlag)
 {
     int todoOk = 0;
     int indice;
@@ -94,7 +117,7 @@ int altaMoto(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC
     int bufferCilindrada;
     int bufferPuntaje;
 
-    if(vec != NULL && pNextId != NULL && tip != NULL && tam > 0 && tamT > 0)
+    if(vec != NULL && pNextId != NULL && tip != NULL && pFlag != NULL && tam > 0 && tamT > 0)
     {
         system("cls");
         printf("*** Alta Moto ***\n\n");
@@ -163,6 +186,7 @@ int altaMoto(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC
             vec[indice] = nuevaMoto;
 
             (*pNextId)++;
+            *pFlag = 0;
             todoOk = 1;
         }
 
@@ -195,10 +219,25 @@ int buscarMoto(eMoto vec[], int tam, int id, int* pIndex)
                 *pIndex = i;
                 break;
             }
-            todoOk = 1;
         }
+        todoOk = 1;
     }
     return todoOk;
+}
+
+int validarMoto(eMoto vec[], int tam, int id)
+{
+    int esValido = 0;
+    int indice;
+
+    if(buscarMoto(vec, tam, id, &indice) == 1)
+    {
+        if(indice != -1)
+        {
+            esValido = 1;
+        }
+    }
+    return esValido;
 }
 
 void mostrarMoto (eMoto vec, int tam, eTipo tip[], int tamT, eColor col[], int tamC)
@@ -216,13 +255,36 @@ void mostrarMoto (eMoto vec, int tam, eTipo tip[], int tamT, eColor col[], int t
     printf("Puntaje: %d\n", vec.puntaje);
 
 }
+int ordenarMotosTipoId(eMoto vec[], int tam)
+{
+   int todoOk = 0;
+   eMoto auxVec;
 
-int listarMotos(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC)
+    if(vec != NULL && tam > 0)
+    {
+        for(int i=0; i < tam-1; i++)
+        {
+            for(int j = i +1; j < tam ; j++)
+            {
+                if(((vec[i].idTipo == vec[j].idTipo) && (vec[i].id > vec[j].id))
+                   ||((vec[i].idTipo != vec[j].idTipo) && (vec[i].idTipo > vec[j].idTipo)))
+                   {
+                       auxVec = vec[i];
+                        vec[i] = vec[j];
+                        vec[j] = auxVec;
+                   }
+            }
+        }
+        todoOk = 1;
+    }
+    return todoOk;
+}
+
+int listarMotos(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC, int flagM)
 {
     int todoOk = 0;
-    int flag = 1;
 
-    if(vec != NULL && tip != NULL && col != NULL && tam > 0 && tamT > 0 && tamC > 0)
+    if(vec != NULL && tip != NULL && col != NULL && tam > 0 && tamT > 0 && tamC > 0 && flagM != 1)
     {
         // system("cls");
         printf("*************************************** MOTOS **************************************\n\n");
@@ -234,14 +296,13 @@ int listarMotos(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int t
             if( !vec[i].isEmpty)
             {
                 mostrarMotoFila(vec[i], tam, tip, tamT, col, tamC);
-                flag = 0;
             }
         }
-        if(flag)
-        {
-            printf("No hay motos cargadas en el sistema.\n");
-        }
         todoOk = 1;
+    }
+    else
+    {
+        printf("Primero debe cargar motos en el sistema\n");
     }
     return todoOk;
 }
@@ -263,16 +324,16 @@ void mostrarMotoFila(eMoto vec, int tam, eTipo tip[], int tamT, eColor col[], in
            vec.puntaje);
 }
 
-int bajaMoto(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC)
+int bajaMoto(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC, int flag)
 {
     int todoOk = 0;
     int indice;
     int id;
     char confirma;
 
-    if(vec != NULL && tam > 0 )
+    if(vec != NULL && tip != NULL && col != NULL && tam > 0 && tamT > 0 && tamC > 0 && flag != 1)
     {
-        listarMotos(vec, tam, tip, tamT, col, tamC);
+        listarMotos(vec, tam, tip, tamT, col, tamC, flag);
         printf("Ingrese Id: ");
         scanf("%d",&id);
 
@@ -302,12 +363,17 @@ int bajaMoto(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC
             todoOk = 1;
         }
     }
+    else
+    {
+        printf("Primero debe cargar motos en el sistema\n");
+    }
     return todoOk;
 }
 
-int harcodearMotos(eMoto vec[], int tam, int cant, int* pNextId)
+int harcodearMotos(eMoto vec[], int tam, int* pNextId, int* pFlag)
 {
     int todoOk = 0;
+    int cant;
 
     eMoto motos[10] =
     {
@@ -322,7 +388,14 @@ int harcodearMotos(eMoto vec[], int tam, int cant, int* pNextId)
         {0, "Suzuki", 1003, 10004, 600,2,0},
         {0, "Yamaha", 1002, 10000, 750,7,0},
     };
-    if(vec != NULL && pNextId != NULL && tam >= 0 && cant >= 0)
+    printf("Que cantidad de motos desea dar de alta? 'MAXIMO 10': ");
+    scanf("%d", &cant);
+    while(cant < 0 || cant > 10)
+    {
+        printf("Que cantidad de motos desea dar de alta? 'MAXIMO 10': ");
+        scanf("%d", &cant);
+    }
+    if(vec != NULL && pNextId != NULL && tam >= 0 && cant >= 0 && cant < 11)
     {
         for(int i = 0; i < cant; i++)
         {
@@ -330,6 +403,7 @@ int harcodearMotos(eMoto vec[], int tam, int cant, int* pNextId)
             vec[i].id = *pNextId;
             (*pNextId)++;
         }
+        *pFlag = 0;
         todoOk = 1;
     }
     return todoOk;
@@ -349,7 +423,7 @@ int menuModificarMoto()
     return opcion;
 }
 
-int modificarMoto(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC)
+int modificarMoto(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC, int flag)
 {
     int todoOk = 0;
     int indice;
@@ -357,9 +431,9 @@ int modificarMoto(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int
     int idColor;
     int puntaje;
 
-    if(vec && tip && col && tam > 0 && tamT > 0 && tamC > 0 )
+    if(vec && tip && col && tam > 0 && tamT > 0 && tamC > 0 && flag != 1)
     {
-        listarMotos(vec, tam, tip, tamT, col, tamC);
+        listarMotos(vec, tam, tip, tamT, col, tamC, flag);
         printf("Ingrese Id: ");
         scanf("%d",&id);
 
@@ -408,6 +482,308 @@ int modificarMoto(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int
             }
             todoOk = 1;
         }
+    }
+    else
+    {
+        printf("Primero debe cargar motos en el sistema\n");
+    }
+    return todoOk;
+}
+
+int mostrarMotosPorColor(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC)
+{
+    int todoOk = 0;
+    int idColor;
+    char desc[20];
+
+    if(vec != NULL && tip != NULL && col != NULL && tam > 0 && tamT > 0 && tamC > 0)
+    {
+        listarColores(col, tamC);
+
+        printf("Ingrese Id Color: ");
+        scanf("%d", &idColor);
+
+        while(validarColor(col, tamC, idColor) == 0)
+        {
+            listarColores(col, tamC);
+            printf("Ingrese Id Color Valido: ");
+            scanf("%d", &idColor);
+        }
+        cargarDescripcionColor(col, tamC, idColor, desc);
+        strupr(desc);
+        printf("********************************** MOTOS DE COLOR %s********************************\n\n", desc);
+        printf(" ID           MARCA            TIPO            COLOR     CILINDRADA          PUNTAJE \n");
+        printf("-------------------------------------------------------------------------------------\n\n");
+        for(int i=0; i < tam; i++)
+        {
+            if(!vec[i].isEmpty && vec[i].idColor == idColor)
+            {
+                mostrarMotoFila(vec[i], tam, tip, tamT, col, tamC);
+            }
+        }
+        todoOk = 1;
+    }
+    return todoOk;
+}
+
+int menuInformes()
+{
+    int opcion;
+
+    printf("\n   *** INFORMES ***\n\n");
+    printf("1. Mostrar motos de un color seleccionado\n");
+    printf("2. Promedio del puntaje de un tipo seleccionado\n");
+    printf("3. Mostrar motos de mayor cilindrada\n");
+    printf("4. Listar motos separadas por tipo\n");
+    printf("5. Contar motos de un color y tipo seleccionado\n");
+    printf("6. Mostrar color/es mas elegidos\n");
+    printf("Ingrese Opcion: ");
+    fflush(stdin);
+    scanf("%d", &opcion);
+
+    return opcion;
+}
+
+int Informes(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC, int flagM)
+{
+    int todoOk = 0;
+
+    if(vec && tip && col && tam > 0 && tamT > 0 && tamC > 0 && flagM != 1)
+    {
+        switch(menuInformes())
+        {
+        case 1:
+            mostrarMotosPorColor(vec, tam, tip, tamT, col, tamC);
+            break;
+        case 2:
+            promedioPuntajePorIdTipo(vec, tam, tip, tamT);
+            break;
+        case 3:
+            mostrarMotosPorMayorCilindrada(vec, tam, tip, tamT, col, tamC);
+            break;
+        case 4:
+            listarMotosXTipo(vec, tam, tip, tamT, col, tamC);
+            break;
+        case 5:
+            contarMotosPorColorTipo(vec, tam, tip, tamT, col, tamC);
+            break;
+        case 6:
+            colorMasElegido(vec, tam, tip, tamT, col, tamC);
+            break;
+
+        }
+    }
+    else
+    {
+        printf("Para acceder a los informes debe cargar motos en el sistema\n");
+    }
+    todoOk = 1;
+    return todoOk;
+}
+
+int promedioPuntajePorIdTipo(eMoto vec[], int tam, eTipo tip[], int tamT)
+{
+    int todoOk = 0;
+    int idTipo;
+    char desc[20];
+    int contadorTipo = 0;
+    int acumuladorPuntaje = 0;
+    float promedio = 0;
+
+    if(vec != NULL && tip != NULL && tam > 0 && tamT > 0)
+    {
+        listarTipos(tip, tamT);
+
+        printf("Ingrese Id Tipo: ");
+        scanf("%d", &idTipo);
+
+        while(validarTipo(tip, tamT, idTipo) == 0)
+        {
+            listarTipos(tip, tamT);
+            printf("Ingrese Id Tipo: ");
+            scanf("%d", &idTipo);
+        }
+        cargarDescripcionTipo(tip, tamT, idTipo, desc);
+        strupr(desc);
+
+        for(int i=0; i < tam; i++)
+        {
+            if(!vec[i].isEmpty && vec[i].idTipo == idTipo)
+            {
+                contadorTipo++;
+                acumuladorPuntaje += vec[i].puntaje;
+            }
+        }
+        promedio = (float) acumuladorPuntaje / contadorTipo;
+        printf("El promedio de puntaje del tipo %s es: %.2f\n\n", desc, promedio);
+        todoOk = 1;
+    }
+    return todoOk;
+}
+
+int mostrarMotosPorMayorCilindrada(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC)
+{
+    int todoOk = 0;
+
+    if(vec != NULL && tip != NULL && col != NULL && tam > 0 && tamT > 0 && tamC > 0)
+    {
+        printf("****************************** MOTOS DE MAYOR CILINDRADA*****************************\n\n");
+        printf(" ID           MARCA            TIPO            COLOR     CILINDRADA          PUNTAJE \n");
+        printf("-------------------------------------------------------------------------------------\n\n");
+        for(int i=0; i < tam; i++)
+        {
+            if(!vec[i].isEmpty && vec[i].cilindrada == 750)
+            {
+                mostrarMotoFila(vec[i], tam, tip, tamT, col, tamC);
+            }
+        }
+        todoOk = 1;
+    }
+    return todoOk;
+}
+
+int listarMotosXTipo(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC)
+{
+    int todoOk = 0;
+    char desc[20];
+
+    if(vec != NULL && tip != NULL && col != NULL && tam > 0 && tamT > 0 && tamC > 0)
+    {
+
+        printf(" ID           MARCA            TIPO            COLOR     CILINDRADA          PUNTAJE \n");
+        printf("-------------------------------------------------------------------------------------\n\n");
+        for(int j=0; j < tamT; j++)
+        {
+            cargarDescripcionTipo(tip, tamT, tip[j].id, desc);
+            strupr(desc);
+            printf("\n********************************** MOTOS DE TIPO %s********************************\n", desc);
+            printf("-------------------------------------------------------------------------------------\n\n");
+            for(int i=0; i < tam; i++)
+            {
+                if(!vec[i].isEmpty && vec[i].idTipo == tip[j].id)
+                {
+                    mostrarMotoFila(vec[i], tam, tip, tamT, col, tamC);
+                }
+            }
+        }
+        todoOk = 1;
+    }
+    return todoOk;
+}
+
+int contarMotosPorColorTipo(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC)
+{
+    int todoOk = 0;
+    int idTipo;
+    int idColor;
+    char desC[20];
+    char desT[20];
+    int contadorColorTipo = 0;
+
+    if(vec != NULL && tip != NULL && col != NULL && tam > 0 && tamT > 0 && tamC > 0)
+    {
+        listarTipos(tip, tamT);
+
+        printf("Seleccione Id Tipo: ");
+        scanf("%d", &idTipo);
+
+        while(validarTipo(tip, tamT, idTipo) == 0)
+        {
+            listarTipos(tip, tamT);
+            printf("ERROR! Seleccione Id Tipo: ");
+            scanf("%d", &idTipo);
+        }
+        listarColores(col, tamC);
+
+        printf("Seleccione Id Color: ");
+        scanf("%d", &idColor);
+
+        while(validarColor(col, tamC, idColor) == 0)
+        {
+            listarColores(col, tamC);
+            printf("ERROR! Seleccione Id Color: ");
+            scanf("%d", &idColor);
+        }
+        cargarDescripcionColor(col, tamC, idColor, desC);
+        cargarDescripcionTipo(tip, tamT, idTipo, desT);
+
+        for(int i=0; i < tam; i++)
+        {
+            if(!vec[i].isEmpty && vec[i].idTipo == idTipo && vec[i].idColor == idColor)
+            {
+                contadorColorTipo++;
+            }
+        }
+        if(contadorColorTipo != 0)
+        {
+            printf("La cantidad de motos de color %s y de tipo %s es: %d\n", desC, desT, contadorColorTipo);
+        }
+        else
+        {
+            printf("No hay motos de color %s y de tipo %s cargadas en el sistema\n", desC, desT);
+        }
+        todoOk = 1;
+    }
+    return todoOk;
+}
+
+int contadorMotosXColor(eMoto vec[], int tam,  eColor col[], int tamC, int idColor, int* pCont)
+{
+    int todoOk = 0;
+    int contadorColor = 0;
+
+    if(vec != NULL && col != NULL && tam > 0 && tamC > 0)
+    {
+        for(int i = 0; i < tam; i++)
+        {
+            if(!vec[i].isEmpty && vec[i].idColor == idColor)
+            {
+                contadorColor++;
+            }
+        }
+        *pCont = contadorColor;
+        todoOk = 1;
+    }
+    return todoOk;
+}
+
+int colorMasElegido(eMoto vec[], int tam, eTipo tip[], int tamT, eColor col[], int tamC)
+{
+    int todoOk = 0;
+    int contadorMotosColor[tamC];
+    int flag = 1;
+    int colorMasPedido = 0;
+
+
+    if(vec != NULL && tip != NULL && col != NULL && tam > 0 && tamT > 0 && tamC > 0)
+    {
+
+        for(int i=0; i < tamC; i++)
+        {
+            contadorMotosColor[i] = 0;
+        }
+        for(int i=0; i < tamC; i++)
+        {
+            contadorMotosXColor(vec, tam, col, tamC, col[i].id, &contadorMotosColor[i]);
+        }
+        for(int i=0; i < tamC; i++)
+        {
+            if(flag || contadorMotosColor[i] > colorMasPedido)
+            {
+                colorMasPedido = contadorMotosColor[i];
+                flag = 0;
+            }
+        }
+            printf("El Color/es mas elegido es/son: \n");
+            for(int i=0; i < tamC; i++)
+            {
+                if(contadorMotosColor[i] == colorMasPedido)
+                {
+                    printf("%s\n", col[i].nombreColor);
+                }
+            }
+
+        todoOk = 1;
     }
     return todoOk;
 }

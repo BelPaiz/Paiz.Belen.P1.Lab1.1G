@@ -1,55 +1,75 @@
 # depslib dependency file v1.0
-1652486813 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\color.c
+1652979153 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\color.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"color.h"
 
-1652479208 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\fecha.c
+1652978780 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\fecha.c
+	<stdio.h>
+	<stdlib.h>
+	"fecha.h"
 
-1652490239 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\main.c
+1653090072 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\main.c
 	<stdio.h>
 	<stdlib.h>
 	"moto.h"
+	"color.h"
+	"tipo.h"
+	"servicio.h"
+	"trabajo.h"
 
-1652489994 d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\moto.h
+1653089836 d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\moto.h
 	"tipo.h"
 	"color.h"
-	"servicio.h"
-
-1652490239 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\servicio.c
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	"servicio.h"
-
-1652484886 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\tipo.c
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	"tipo.h"
-	"color.h"
-
-1652479447 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\trabajo.c
-
-1652482300 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\validacionesdatos.c
-	<stdio.h>
-	<stdlib.h>
 	"validacionesDatos.h"
 
-1652482300 d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\validacionesdatos.h
+1652979073 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\servicio.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"servicio.h"
 
-1652484761 d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\tipo.h
+1652989435 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\tipo.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"tipo.h"
 
-1652484760 d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\color.h
+1653090072 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\trabajo.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+	"trabajo.h"
+	"servicio.h"
 
-1652490123 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\moto.c
+1653012846 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\validacionesdatos.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+	"validacionesDatos.h"
+
+1653007379 d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\validacionesdatos.h
+
+1653007379 d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\tipo.h
+
+1653007379 d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\color.h
+
+1653090072 source:d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\moto.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<ctype.h>
 	"moto.h"
-	"validacionesDatos.h"
 
-1652490240 d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\servicio.h
+1653007379 d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\servicio.h
+
+1653007379 d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\fecha.h
+
+1653090072 d:\usuarios\belen\documentos\programacion1\paiz.belen.p1.lab1.1g\trabajo.h
+	"fecha.h"
+	"moto.h"
+	"servicio.h"
 
